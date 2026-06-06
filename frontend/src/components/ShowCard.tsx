@@ -9,7 +9,7 @@ interface ShowCardProps {
 
 export default function ShowCard({ show, onDelete }: ShowCardProps) {
   const formattedDate = show.date_seen
-    ? new Date(show.date_seen + 'T00:00:00').toLocaleDateString('en-US', {
+    ? new Date(show.date_seen.slice(0, 10) + 'T00:00:00').toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
