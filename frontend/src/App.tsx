@@ -6,6 +6,8 @@ import ShowCard from './components/ShowCard';
 import WishlistCard from './components/WishlistCard';
 import AddShowModal from './components/AddShowModal';
 
+const API = import.meta.env.VITE_API_URL ?? '';
+
 type SortOption = 'date' | 'rating' | 'added';
 
 export default function App() {
@@ -23,7 +25,7 @@ export default function App() {
     try {
       const params: Record<string, string> = { status: activeTab };
       if (sortBy !== 'added') params.sort = sortBy;
-      const res = await axios.get<Show[]>('/api/shows', { params });
+      const res = await axios.get<Show[]>(`${API}/api/shows`, { params });
       setShows(res.data);
     } catch (err: unknown) {
       if (axios.isAxiosError(err) && err.response) {
@@ -41,7 +43,7 @@ export default function App() {
   }, [fetchShows]);
 
   const handleAdd = async (data: ShowFormData) => {
-    await axios.post('/api/shows', {
+    await axios.post(`${API}/api/shows`, {
       ...data,
       rating: data.rating === '' ? null : data.rating,
       date_seen: data.date_seen || null,
@@ -53,13 +55,13 @@ export default function App() {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Delete this show?')) return;
-    await axios.delete(`/api/shows/${id}`);
+    await axios.delete(`${API}/api/shows/${id}`);
     setShows((prev) => prev.filter((s) => s.id !== id));
   };
 
   const handleMarkSeen = async (data: ShowFormData) => {
     if (!moveTarget) return;
-    await axios.put(`/api/shows/${moveTarget.id}`, {
+    await axios.put(`${API}/api/shows/${moveTarget.id}`, {
       ...data,
       status: 'seen',
       rating: data.rating === '' ? null : data.rating,
